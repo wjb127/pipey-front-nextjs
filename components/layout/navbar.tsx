@@ -48,9 +48,6 @@ export function Navbar() {
 
           {/* CTA Button */}
           <div className="flex items-center space-x-4">
-            <div className="hidden lg:block text-sm text-gray-600">
-              🚀 <strong>무료 체험</strong> 3개 리드 분석
-            </div>
             <button className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 transition-colors shadow-sm">
               시작하기
             </button>

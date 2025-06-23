@@ -1,0 +1,131 @@
+services:
+  # Main FastAPI Backend Service
+  - type: web
+    name: pipey-backend-api
+    env: python
+    region: singapore
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 2
+    healthCheckPath: /health
+    envVars:
+      # Supabase Configuration
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      
+      # JWT Configuration
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 1440
+      
+      # AI Services
+      - key: OPENAI_API_KEY
+        sync: false
+      
+      # Email Service
+      - key: RESEND_API_KEY
+        sync: false
+      
+      # Environment
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: false
+      
+      # CORS Settings
+      - key: ALLOWED_ORIGINS
+        value: "https://pipey-front-nextjs.vercel.app,http://localhost:3000,http://localhost:3001"
+      
+      # API Settings
+      - key: API_V1_STR
+        value: "/api/v1"
+      - key: PROJECT_NAME
+        value: "Pipey Sales Intelligence"
+
+  # Redis Service for Celery
+  - type: redis
+    name: pipey-redis
+    region: singapore
+    plan: starter
+    maxmemoryPolicy: allkeys-lru
+
+  # Celery Worker Service
+  - type: worker
+    name: pipey-celery-worker
+    env: python
+    region: singapore
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A app.tasks.celery_app worker --loglevel=info --concurrency=2
+    envVars:
+      # Same environment variables as web service
+      - fromService:
+          type: web
+          name: pipey-backend-api
+          envVarKey: SUPABASE_URL
+      - fromService:
+          type: web
+          name: pipey-backend-api
+          envVarKey: SUPABASE_SERVICE_ROLE_KEY
+      - fromService:
+          type: web
+          name: pipey-backend-api
+          envVarKey: OPENAI_API_KEY
+      - fromService:
+          type: web
+          name: pipey-backend-api
+          envVarKey: SECRET_KEY
+      
+      # Redis connection for Celery
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: pipey-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: pipey-redis
+          property: connectionString
+
+  # Celery Beat Scheduler (for periodic tasks)
+  - type: worker
+    name: pipey-celery-beat
+    env: python
+    region: singapore
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A app.tasks.celery_app beat --loglevel=info
+    envVars:
+      # Same environment variables as worker
+      - fromService:
+          type: web
+          name: pipey-backend-api
+          envVarKey: SUPABASE_URL
+      - fromService:
+          type: web
+          name: pipey-backend-api
+          envVarKey: SUPABASE_SERVICE_ROLE_KEY
+      - fromService:
+          type: web
+          name: pipey-backend-api
+          envVarKey: OPENAI_API_KEY
+      - fromService:
+          type: web
+          name: pipey-backend-api
+          envVarKey: SECRET_KEY
+      
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: pipey-redis
+          property: connectionString
+
+databases: []  # Using Supabase instead of Render PostgreSQL 

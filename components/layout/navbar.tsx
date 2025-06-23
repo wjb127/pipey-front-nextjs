@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Zap, Target, TrendingUp, BarChart3, Building2 } from 'lucide-react'
+import { Zap, Home, TrendingUp, BarChart3, Building2 } from 'lucide-react'
 
 export function Navbar() {
   return (
@@ -22,11 +22,11 @@ export function Navbar() {
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
             <Link
-              href="/"
+              href="/dashboard"
               className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors group"
             >
-              <Target className="h-4 w-4 group-hover:scale-110 transition-transform" />
-              <span className="font-medium">리드 발굴</span>
+              <Home className="h-4 w-4 group-hover:scale-110 transition-transform" />
+              <span className="font-medium">대시보드</span>
             </Link>
             
             <Link
@@ -38,7 +38,7 @@ export function Navbar() {
             </Link>
             
             <Link
-              href="/dashboard"
+              href="/"
               className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors group"
             >
               <BarChart3 className="h-4 w-4 group-hover:scale-110 transition-transform" />
@@ -69,11 +69,11 @@ export function Navbar() {
       <div className="md:hidden border-t border-gray-200 bg-gray-50">
         <div className="px-4 py-3 space-y-3">
           <Link
-            href="/"
+            href="/dashboard"
             className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors"
           >
-            <Target className="h-4 w-4" />
-            <span>리드 발굴</span>
+            <Home className="h-4 w-4" />
+            <span>대시보드</span>
           </Link>
           <Link
             href="/analytics"
@@ -83,7 +83,7 @@ export function Navbar() {
             <span>세일즈 인텔리전스</span>
           </Link>
           <Link
-            href="/dashboard"
+            href="/"
             className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors"
           >
             <BarChart3 className="h-4 w-4" />

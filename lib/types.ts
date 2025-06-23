@@ -1,293 +1,278 @@
 // ==========================================
-// Pipey Sales Intelligence Platform
-// TypeScript Type Definitions
+// Pipey SaaS Platform Types
+// 고객사 정보 기반 AI 잠재고객 발굴 플랫폼
 // ==========================================
 
-// Base Types
-export type UUID = string;
-export type ISODateTime = string;
-
-// ==========================================
-// Database Table Types
-// ==========================================
-
-// Users Table
-export interface PipeyUser {
-  id: UUID;
-  email: string;
-  name?: string;
-  company_name?: string;
-  industry?: string;
-  created_at: ISODateTime;
-  updated_at: ISODateTime;
+export interface User {
+  id: string
+  email: string
+  name: string
+  role: string
+  subscription_tier: 'free' | 'starter' | 'pro' | 'enterprise'
+  api_credits: number
+  is_active: boolean
+  email_verified: boolean
+  last_login?: string
+  created_at: string
+  updated_at: string
 }
 
-// Companies Table
-export interface PipeyCompany {
-  id: UUID;
-  user_id: UUID;
-  name: string;
-  industry?: string;
-  website?: string;
-  description?: string;
-  employee_count?: number;
-  location?: string;
-  status: 'active' | 'inactive' | 'archived';
-  created_at: ISODateTime;
-  updated_at: ISODateTime;
+// 고객사 정보 (사용자의 회사)
+export interface ClientCompany {
+  id: string
+  user_id: string
+  company_name: string
+  industry: string
+  company_size: 'startup' | 'small' | 'medium' | 'large'
+  website?: string
+  description: string
+  target_market: string
+  products_services: {
+    main_product: string
+    key_features: string[]
+    pricing_model: string
+  }
+  value_proposition: string
+  ideal_customer_profile: {
+    company_size: string
+    industry: string[]
+    pain_points: string[]
+    budget_range?: string
+  }
+  is_active: boolean
+  created_at: string
+  updated_at: string
 }
 
-// Analyses Table
-export interface PipeyAnalysis {
-  id: UUID;
-  user_id: UUID;
-  company_id: UUID;
-  status: 'processing' | 'completed' | 'failed' | 'pending';
-  priority_score: number;
-  analysis_type: 'sales_intelligence' | 'market_research' | 'competitive_analysis';
-  started_at: ISODateTime;
-  completed_at?: ISODateTime;
-  created_at: ISODateTime;
+// 잠재고객 발굴 작업
+export interface DiscoveryJob {
+  id: string
+  client_company_id: string
+  user_id: string
+  status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled'
+  job_type: 'full_discovery' | 'incremental' | 'refresh'
+  search_criteria: {
+    industries: string[]
+    company_sizes: string[]
+    locations: string[]
+    employee_range: [number, number]
+    technologies?: string[]
+    funding_stage?: string[]
+    growth_signals?: string[]
+  }
+  progress: number // 0-100
+  current_task?: string
+  total_prospects_found: number
+  qualified_prospects: number
+  error_message?: string
+  started_at?: string
+  completed_at?: string
+  created_at: string
+  updated_at: string
 }
 
-// Sales Intelligence Table
-export interface PipeySalesIntelligence {
-  id: UUID;
-  analysis_id: UUID;
-  company_id: UUID;
-  priority_score: number;
-  contact_timing: 'immediate' | 'this_week' | 'this_month' | 'next_quarter';
-  key_insights: Record<string, any>;
-  recommended_approach?: string;
-  decision_makers: Record<string, any>;
-  recent_news_summary?: string;
-  contact_recommendations?: string;
-  created_at: ISODateTime;
+// 발굴된 잠재고객
+export interface Prospect {
+  id: string
+  discovery_job_id: string
+  client_company_id: string
+  user_id: string
+  company_name: string
+  domain?: string
+  industry: string
+  company_size: string
+  location: string
+  employee_count?: number
+  annual_revenue?: number
+  technologies?: string[]
+  recent_funding?: {
+    round: string
+    amount: string
+    date: string
+    investors: string[]
+  }
+  key_personnel?: {
+    [role: string]: {
+      name: string
+      title: string
+      linkedin?: string
+      email?: string
+    }
+  }
+  qualification_score: number // 0-100
+  data_sources?: string[]
+  status: 'discovered' | 'qualified' | 'contacted' | 'responded' | 'converted'
+  created_at: string
+  updated_at: string
 }
 
-// Emails Table
-export interface PipeyEmail {
-  id: UUID;
-  sales_intelligence_id: UUID;
-  recipient_email: string;
-  recipient_name?: string;
-  subject: string;
-  content: string;
-  personalization_data: Record<string, any>;
-  status: 'draft' | 'sent' | 'delivered' | 'opened' | 'replied';
-  sent_at?: ISODateTime;
-  created_at: ISODateTime;
+// AI 생성 세일즈 인텔리전스
+export interface SalesIntelligence {
+  id: string
+  prospect_id: string
+  client_company_id: string
+  user_id: string
+  match_score: number // 0-100
+  priority_level: 'low' | 'medium' | 'high' | 'critical'
+  contact_timing: 'immediate' | 'this_week' | 'this_month' | 'next_quarter'
+  pain_points: string[]
+  value_props: string[]
+  decision_makers: {
+    primary?: {
+      name: string
+      title: string
+      linkedin?: string
+      contact_priority: 'high' | 'medium' | 'low'
+    }
+    secondary?: {
+      name: string
+      title: string
+      linkedin?: string
+      contact_priority: 'high' | 'medium' | 'low'
+    }
+  }
+  recommended_approach: string
+  conversation_starters: string[]
+  objection_handling?: {
+    [objection: string]: string
+  }
+  recent_triggers: string[]
+  competitive_landscape?: {
+    current_solutions?: string[]
+    switching_probability?: number
+    decision_timeline?: string
+  }
+  ai_confidence: number // 0-1
+  generated_at: string
+  created_at: string
 }
 
-// News Items Table
-export interface PipeyNewsItem {
-  id: UUID;
-  company_id: UUID;
-  title: string;
-  content?: string;
-  url?: string;
-  published_at?: ISODateTime;
-  source?: string;
-  relevance_score?: number;
-  sentiment: 'positive' | 'negative' | 'neutral';
-  created_at: ISODateTime;
+// 이메일 생성 및 발송
+export interface Email {
+  id: string
+  intelligence_id: string
+  prospect_id: string
+  user_id: string
+  message_type: 'cold_email' | 'linkedin_message' | 'follow_up'
+  subject?: string
+  content: string
+  tone: 'professional' | 'friendly' | 'consultative'
+  personalization_elements: string[]
+  confidence_score: number // 0-1
+  estimated_response_rate: string
+  status: 'draft' | 'sent' | 'opened' | 'replied' | 'bounced'
+  sent_at?: string
+  opened_at?: string
+  replied_at?: string
+  recipient_email?: string
+  sender_email?: string
+  tracking_id?: string
+  created_at: string
 }
 
-// Contact Attempts Table
-export interface PipeyContactAttempt {
-  id: UUID;
-  email_id: UUID;
-  company_id: UUID;
-  contact_method: 'email' | 'phone' | 'linkedin' | 'meeting';
-  status: 'attempted' | 'successful' | 'failed' | 'follow_up_needed';
-  response_received: boolean;
-  notes?: string;
-  attempted_at: ISODateTime;
+// 뉴스 및 트리거 이벤트
+export interface NewsItem {
+  id: string
+  prospect_id: string
+  company_name: string
+  title: string
+  content?: string
+  url?: string
+  source: string
+  published_at: string
+  relevance_score: number // 0-1
+  sentiment: 'positive' | 'negative' | 'neutral'
+  trigger_type: 'funding' | 'hiring' | 'product_launch' | 'acquisition' | 'executive_change' | 'expansion' | 'partnership'
+  keywords?: string[]
+  created_at: string
 }
 
-// ==========================================
-// Enhanced Types with Relations
-// ==========================================
-
-// Company with Analysis Info
-export interface CompanyWithAnalysis extends PipeyCompany {
-  analyses?: PipeyAnalysis[];
-  latest_analysis?: PipeyAnalysis;
-  sales_intelligence?: PipeySalesIntelligence[];
+// 컨택 시도 이력
+export interface ContactAttempt {
+  id: string
+  prospect_id: string
+  user_id: string
+  email_id?: string
+  attempt_type: 'email' | 'linkedin' | 'phone' | 'meeting'
+  status: 'sent' | 'opened' | 'replied' | 'meeting_booked' | 'no_response'
+  response_content?: string
+  follow_up_needed: boolean
+  follow_up_date?: string
+  notes?: string
+  created_at: string
 }
 
-// Sales Intelligence with Company Info
-export interface SalesIntelligenceWithCompany extends PipeySalesIntelligence {
-  company: PipeyCompany;
-  analysis: PipeyAnalysis;
-  emails?: PipeyEmail[];
-}
-
-// Email with Sales Intelligence Info
-export interface EmailWithContext extends PipeyEmail {
-  sales_intelligence: PipeySalesIntelligence;
-  company: PipeyCompany;
-}
-
-// ==========================================
-// API Response Types
-// ==========================================
-
-// Dashboard Stats
+// 대시보드 통계
 export interface DashboardStats {
-  total_companies: number;
-  active_analyses: number;
-  hot_leads: number;
-  emails_sent: number;
-  response_rate: number;
+  total_prospects: number
+  qualified_prospects: number
+  hot_leads: number
+  contacted_prospects: number
+  responded_prospects: number
+  conversion_rate: number
+  average_response_rate: number
+  active_discovery_jobs: number
 }
 
-// Company Registration Request
-export interface CompanyRegistrationRequest {
-  name: string;
-  industry: string;
+// API 응답 타입들
+export interface ApiResponse<T> {
+  success: boolean
+  data?: T
+  message?: string
+  error?: string
 }
 
-// Analysis Status Response
-export interface AnalysisStatusResponse {
-  id: UUID;
-  company_name: string;
-  status: PipeyAnalysis['status'];
-  priority_score: number;
-  created_at: ISODateTime;
-  estimated_completion?: ISODateTime;
+export interface PaginatedResponse<T> {
+  data: T[]
+  pagination: {
+    page: number
+    limit: number
+    total: number
+    total_pages: number
+  }
 }
 
-// Email Generation Request
-export interface EmailGenerationRequest {
-  sales_intelligence_id: UUID;
-  recipient_email: string;
-  recipient_name?: string;
-  tone?: 'professional' | 'friendly' | 'formal';
-  length?: 'short' | 'medium' | 'long';
+// 필터 및 정렬 옵션
+export interface ProspectFilters {
+  match_score_min?: number
+  priority_level?: 'low' | 'medium' | 'high' | 'critical'
+  status?: 'discovered' | 'qualified' | 'contacted' | 'responded' | 'converted'
+  industry?: string
+  company_size?: string
+  contact_timing?: 'immediate' | 'this_week' | 'this_month' | 'next_quarter'
 }
-
-// Email Generation Response
-export interface EmailGenerationResponse {
-  subject: string;
-  content: string;
-  personalization_points: string[];
-  confidence_score: number;
-}
-
-// ==========================================
-// Filter and Sort Types
-// ==========================================
-
-// Analysis Filter Options
-export interface AnalysisFilters {
-  status?: PipeyAnalysis['status'][];
-  priority_min?: number;
-  priority_max?: number;
-  industry?: string[];
-  date_from?: ISODateTime;
-  date_to?: ISODateTime;
-}
-
-// Sort Options
-export type SortField = 
-  | 'priority_score' 
-  | 'created_at' 
-  | 'company_name' 
-  | 'status';
-
-export type SortDirection = 'asc' | 'desc';
 
 export interface SortOptions {
-  field: SortField;
-  direction: SortDirection;
+  field: string
+  direction: 'asc' | 'desc'
 }
 
-// ==========================================
-// Form Types
-// ==========================================
-
-// Company Registration Form
-export interface CompanyRegistrationForm {
-  company_name: string;
-  industry: string;
+// 액션 상태 (폼 처리용)
+export interface ActionState {
+  success: boolean
+  message: string
+  data?: any
+  errors?: Record<string, string[]>
 }
 
-// Action State for Forms (React 19)
-export interface ActionState<T = any> {
-  data?: T;
-  error?: string;
-  loading: boolean;
+// 뉴스 크롤링 API 응답
+export interface CrawlNewsResponse {
+  taskId: string
+  message: string
+  status: 'started' | 'in_progress' | 'completed' | 'failed'
 }
 
-// ==========================================
-// Legacy Types (for backwards compatibility)
-// ==========================================
-
-// Original types (keeping for existing components)
-export interface Company {
-  id: string;
-  name: string;
-  industry: string;
-  status: 'hot' | 'processing' | 'waiting';
-  priority: number;
-  analysis?: {
-    news_relevance: number;
-    timing_score: number;
-    decision_makers: string[];
-    recommended_approach: string;
-  };
+// 유틸리티 타입들
+export type ProspectWithIntelligence = Prospect & {
+  intelligence?: SalesIntelligence
+  recent_news?: NewsItem[]
 }
 
-export interface AnalyzeNewsResponse {
-  companies: Array<{
-    id: string;
-    name: string;
-    industry: string;
-    status: 'hot' | 'processing' | 'waiting';
-    priority: number;
-    lastAnalysis?: string;
-    analysis?: {
-      news_relevance: number;
-      timing_score: number;
-      decision_makers: string[];
-      recommended_approach: string;
-    };
-  }>;
-  summary: {
-    total: number;
-    hot_leads: number;
-    processing: number;
-    waiting: number;
-  };
+export type IntelligenceWithProspect = SalesIntelligence & {
+  prospect: Prospect
 }
 
-export interface SalesIntelligence {
-  id: string;
-  company_name: string;
-  contact_timing: string;
-  priority_score: number;
-  key_insights: string[];
-  decision_makers: Array<{
-    name: string;
-    role: string;
-    contact_info?: string;
-  }>;
-  recent_news: string;
-  recommended_approach: string;
-  contact_recommendations: string[];
-}
-
-// ==========================================
-// Utility Types
-// ==========================================
-
-// Database insert types (without auto-generated fields)
-export type InsertPipeyCompany = Omit<PipeyCompany, 'id' | 'created_at' | 'updated_at'>;
-export type InsertPipeyAnalysis = Omit<PipeyAnalysis, 'id' | 'created_at'>;
-export type InsertPipeyEmail = Omit<PipeyEmail, 'id' | 'created_at'>;
-
-// Update types (partial with required id)
-export type UpdatePipeyCompany = Partial<PipeyCompany> & { id: UUID };
-export type UpdatePipeyAnalysis = Partial<PipeyAnalysis> & { id: UUID };
-export type UpdatePipeyEmail = Partial<PipeyEmail> & { id: UUID }; 
+export type DiscoveryJobWithProgress = DiscoveryJob & {
+  client_company: ClientCompany
+  prospects_preview?: Prospect[]
+} 

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Zap, Home, TrendingUp, Settings, Building2 } from 'lucide-react'
+import { Zap, Home, TrendingUp, Settings, Building2, Bot } from 'lucide-react'
 
 export function Navbar() {
   return (
@@ -35,6 +35,14 @@ export function Navbar() {
             >
               <TrendingUp className="h-4 w-4 group-hover:scale-110 transition-transform" />
               <span className="font-medium">세일즈 인텔리전스</span>
+            </Link>
+            
+            <Link
+              href="/ai-tools"
+              className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600 transition-colors group"
+            >
+              <Bot className="h-4 w-4 group-hover:scale-110 transition-transform" />
+              <span className="font-medium">AI 도구</span>
             </Link>
             
             <Link
@@ -78,6 +86,13 @@ export function Navbar() {
           >
             <TrendingUp className="h-4 w-4" />
             <span>세일즈 인텔리전스</span>
+          </Link>
+          <Link
+            href="/ai-tools"
+            className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600 transition-colors"
+          >
+            <Bot className="h-4 w-4" />
+            <span>AI 도구</span>
           </Link>
           <Link
             href="/company-setup"

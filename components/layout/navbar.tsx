@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Zap, Home, TrendingUp, BarChart3, Building2 } from 'lucide-react'
+import { Zap, Home, TrendingUp, Settings, Building2 } from 'lucide-react'
 
 export function Navbar() {
   return (
@@ -38,11 +38,11 @@ export function Navbar() {
             </Link>
             
             <Link
-              href="/"
+              href="/company-setup"
               className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors group"
             >
-              <BarChart3 className="h-4 w-4 group-hover:scale-110 transition-transform" />
-              <span className="font-medium">파이프라인</span>
+              <Settings className="h-4 w-4 group-hover:scale-110 transition-transform" />
+              <span className="font-medium">고객사 설정</span>
             </Link>
           </div>
 
@@ -83,11 +83,11 @@ export function Navbar() {
             <span>세일즈 인텔리전스</span>
           </Link>
           <Link
-            href="/"
+            href="/company-setup"
             className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors"
           >
-            <BarChart3 className="h-4 w-4" />
-            <span>파이프라인</span>
+            <Settings className="h-4 w-4" />
+            <span>고객사 설정</span>
           </Link>
         </div>
       </div>

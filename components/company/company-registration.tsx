@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { crawlCompanyNews } from '@/lib/actions/company-actions'
+import { ActionState } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 function SubmitButton({ pending }: { pending: boolean }) {
@@ -23,10 +24,9 @@ function SubmitButton({ pending }: { pending: boolean }) {
 
 export function CompanyRegistration() {
   const [isPending, startTransition] = useTransition()
-  const [state, setState] = useState({
+  const [state, setState] = useState<ActionState>({
     success: false,
     message: '',
-    data: null,
   })
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

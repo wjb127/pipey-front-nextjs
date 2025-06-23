@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { crawlCompanyNews } from '@/lib/actions/company-actions'
+import { ActionState } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { Building, Target, Search, Sparkles } from 'lucide-react'
 
@@ -36,10 +37,9 @@ function DiscoveryButton({ pending }: { pending: boolean }) {
 
 export function LeadDiscovery() {
   const [isPending, startTransition] = useTransition()
-  const [state, setState] = useState({
+  const [state, setState] = useState<ActionState>({
     success: false,
     message: '',
-    data: null,
   })
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

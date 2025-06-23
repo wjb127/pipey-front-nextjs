@@ -44,11 +44,16 @@ export interface CrawlNewsResponse {
 }
 
 export interface AnalyzeNewsResponse {
-  id: string
-  summary: string
-  timing: 'good' | 'average' | 'bad'
-  newsCount: number
-  articles: NewsArticle[]
+  success: boolean
+  analysisId: string
+  message: string
+  estimatedTime?: number
+  // 선택적 필드들 (완료된 분석에서만 제공)
+  id?: string
+  summary?: string
+  timing?: 'good' | 'average' | 'bad'
+  newsCount?: number
+  articles?: NewsArticle[]
 }
 
 export interface GenerateEmailResponse {

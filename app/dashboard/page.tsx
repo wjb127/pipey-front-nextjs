@@ -32,30 +32,42 @@ export default function DashboardPage() {
         <StatsCard
           title="등록된 기업"
           value={analyses?.length || 0}
-          icon={Building2}
-          trend="+12%"
-          trendUp={true}
+          icon={<Building2 className="h-5 w-5" />}
+          description="전체 등록된 기업 수"
+          trend={{
+            value: 12,
+            isPositive: true
+          }}
         />
         <StatsCard
           title="완료된 분석"
           value={completedAnalyses.length}
-          icon={TrendingUp}
-          trend="+8%"
-          trendUp={true}
+          icon={<TrendingUp className="h-5 w-5" />}
+          description="AI 분석 완료"
+          trend={{
+            value: 8,
+            isPositive: true
+          }}
         />
         <StatsCard
-          title="좋은 타이밍"
+          title="Hot 리드"
           value={goodTimingCount}
-          icon={Clock}
-          trend="+25%"
-          trendUp={true}
+          icon={<Clock className="h-5 w-5" />}
+          description="컨택 추천 기업"
+          trend={{
+            value: 25,
+            isPositive: true
+          }}
         />
         <StatsCard
           title="분석된 뉴스"
           value={totalNewsCount}
-          icon={Mail}
-          trend="+15%"
-          trendUp={true}
+          icon={<Mail className="h-5 w-5" />}
+          description="총 뉴스 기사 수"
+          trend={{
+            value: 15,
+            isPositive: true
+          }}
         />
       </div>
 
